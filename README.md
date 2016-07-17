@@ -7,7 +7,7 @@
 ``` shell
 git clone https://github.com/nladuo/tieba_autosign.git
 ```
-2、下载phantomjs
+2、下载phantomjs  
 3、安装selenium webdriver
 ``` shell
 pip install selenium
