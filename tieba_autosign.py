@@ -7,8 +7,8 @@ from bs4 import BeautifulSoup
 import time
 
 username = u"你的用户名"
-passwd = "your password"
-exe_path = "/Users/kalen/Programfiles/phantomjs-2.1.1-macosx/bin/phantomjs"
+passwd = "your passwd"
+exe_path = "/home/kalen/Programfiles/phantomjs-2.1.1-linux-x86_64/bin/phantomjs"
 
 # 模拟登陆
 print "正在模拟登陆百度贴吧...."
@@ -67,8 +67,11 @@ for tieba in tiebas:
         print "已经完成签到,不需要重新签到\n"
         continue
     sign_btn = driver.find_element_by_xpath('//div[@id="signstar_wrapper"]/a')
+    # 点击两下
     sign_btn.click()
-    time.sleep(2)
+    time.sleep(1)
+    sign_btn.click()
+    time.sleep(1)
     print "签到成功" , "\n"
 
 driver.quit()
