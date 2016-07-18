@@ -9,8 +9,8 @@ git clone https://github.com/nladuo/tieba_autosign.git
 2、下载phantomjs  
 3、安装python 库
 ``` shell
-pip install selenium
-pip install bs4
+pip install selenium    # 安装selenium webdriver
+pip install bs4         # 安装BeautifulSoup
 ```
 3、修改配置
 ``` python
