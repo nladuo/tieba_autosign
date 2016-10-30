@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-# 百度贴吧一键签到
+""" 百度贴吧签到脚本 """
 from __future__ import print_function
 from selenium import webdriver
 import time
