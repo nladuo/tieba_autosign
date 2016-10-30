@@ -1,78 +1,77 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-# 百度贴吧逐个签到
+# 百度贴吧一键签到
+from __future__ import print_function
 from selenium import webdriver
-from selenium.webdriver import ActionChains
-from bs4 import BeautifulSoup
 import time
+from bs4 import BeautifulSoup
+from config import *
 
-username = u"你的用户名"
-passwd = "your passwd"
-exe_path = "/home/kalen/Programfiles/phantomjs-2.1.1-linux-x86_64/bin/phantomjs"
+if __name__ == '__main__':
+    print("正在模拟登陆百度贴吧....")
+    # 模拟登陆
+    driver = webdriver.PhantomJS(executable_path=exe_path, desired_capabilities=dcap)
+    driver.get('http://tieba.baidu.com/?page=user')
 
-# 模拟登陆
-print "正在模拟登陆百度贴吧...."
-driver = webdriver.PhantomJS(executable_path=exe_path)
-driver.get('http://tieba.baidu.com/')
-login_a_tag = driver.find_element_by_xpath('//*[@class="u_login"]/div/a')
-login_a_tag.click()
-time.sleep(1)
-username_input = driver.find_element_by_id("TANGRAM__PSP_8__userName")
-username_input.send_keys(username)
-passwd_input = driver.find_element_by_id("TANGRAM__PSP_8__password")
-passwd_input.send_keys(passwd)
+    # 隐藏跳转app界面
+    app_continue_span = driver.find_element_by_id('index-app-continue')
+    app_continue_span.click()
+    time.sleep(1)
 
-login_btn = driver.find_element_by_id("TANGRAM__PSP_8__submit")
-login_btn.click()
-time.sleep(1)
+    # 显示登陆窗口
+    login_tag = driver.find_element_by_class_name('j_footer_toast')
+    login_tag.click()
+    time.sleep(1)
 
+    # 开始模拟登陆
+    username_input = driver.find_element_by_id("TANGRAM__PSP_6__username")
+    username_input.send_keys(username)
+    passwd_input = driver.find_element_by_id("TANGRAM__PSP_6__password")
+    passwd_input.send_keys(passwd)
 
-# 签到
-chains = ActionChains(driver)
-driver.get("http://tieba.baidu.com/")
-more_a_tag = driver.find_element_by_xpath('//div[@id="moreforum"]/a')
-chains.move_to_element(more_a_tag).perform()
+    login_btn = driver.find_element_by_id("TANGRAM__PSP_6__submit")
+    login_btn.click()
+    time.sleep(1)
 
-tiebas = []
+    print ('登陆成功, 开始签到!')
 
-bs_obj = BeautifulSoup(driver.page_source, "html.parser")
-# 爱逛的贴吧
-like_forum = bs_obj.find('div', {'id': 'likeforumwraper'})
-for a in like_forum.find_all('a'):
-    title = a.get("title")
-    href = a.get("href")
-    if title is None:
-        title = a.get_text()
-    tiebas.append((title, href))
-# 常逛的贴吧
-always_forum = bs_obj.find('div', {'class': 'tbui_panel_content j_panel_content clearfix'})
-for a in always_forum.find_all('a'):
-    title = a.get("title")
-    href = a.get("href")
-    if title is None:
-        title = a.get_text()
-    if href != '#':
-        tiebas.append((title, href))
+    # 开始进行签到
+    driver.get("http://tieba.baidu.com/?page=like")
+    expand_more = driver.find_element_by_xpath("//div[@class='expand-all']/p")
+    expand_more.click()
+    time.sleep(1)
 
-print "登陆完成!!"
-print "开始签到....."
-
-# 逐个签到
-for tieba in tiebas:
-    print "正在签到-->", tieba[0], "吧"
-    driver.get("http://tieba.baidu.com" + tieba[1])
+    # 获取常逛的贴吧
+    tiebas = []
     bs_obj = BeautifulSoup(driver.page_source, "html.parser")
-    a_tag = bs_obj.find("div", {'id': 'signstar_wrapper'}).a
-    if a_tag.get("title") == u"签到完成":
-        print "已经完成签到,不需要重新签到\n"
-        continue
-    sign_btn = driver.find_element_by_xpath('//div[@id="signstar_wrapper"]/a')
-    # 点击两下
-    sign_btn.click()
-    time.sleep(1)
-    sign_btn.click()
-    time.sleep(1)
-    print "签到成功" , "\n"
+    for a in bs_obj.find_all('a', {'class': 'j_forumTile_wrapper'}):
+        title = a.get("data-start-app-param")
+        href = a.get("href")
+        tiebas.append({
+            'title': title,
+            'href': 'http://tieba.baidu.com' + href
+        })
 
-driver.quit()
+    # 逐个签到
+    for tieba in tiebas:
+        print(u"正在签到-->\"" + tieba['title'] + u"\"吧", end = '')
+        driver.get(tieba['href'])
+        bs_obj = BeautifulSoup(driver.page_source, "html.parser")
+        sign_btn_tag = bs_obj.find("a", {'class': 'sign-button'})
+        if sign_btn_tag.text == u"已签到":
+            print("(已经完成签到,不需要重新签到)")
+            continue
+        # 点击签到
+        sign_btn = driver.find_element_by_class_name('sign-button')
+        sign_btn.click()
+        time.sleep(1)
+
+        # 关闭贴吧客户端窗口
+        close_client_btn = driver.find_element_by_class_name('daoliu_sign_in_prompt_close')
+        close_client_btn.click()
+        time.sleep(1)
+        print("(签到成功)")
+
+    print('全部签到完成!!!')
+    driver.quit()
 

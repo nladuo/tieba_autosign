@@ -1,30 +1,29 @@
 # tieba_autosign
 百度贴吧自动签到
-## 效果
-![效果](./effect.png)
+## 截图
+![截图](./screenshot.png)
 
 ## 安装
 1、下载源码
 ``` shell
 git clone https://github.com/nladuo/tieba_autosign.git
+mv tieba_autosign/config.sample.py tieba_autosign/config.py
 ```
-2、下载phantomjs  
-3、安装python 库
+2、下载[phantomjs](http://phantomjs.org/)<br>
+3、安装依赖库
 ``` shell
 pip install selenium    # 安装selenium webdriver
 pip install bs4         # 安装BeautifulSoup
 ```
-3、修改配置
+3、修改配置(config.py)
 ``` python
 username = u"你的用户名"
 passwd = "your password"
 exe_path = "/Users/kalen/Programfiles/phantomjs-2.1.1-macosx/bin/phantomjs"
 ```
-4、测试
+4、签到
 ``` shell
-cd ./tieba_autosign
-./tieba_autosign.py         #测试逐个签到, 目前有点问题
-./tieba_onekey_sgign.py     #测试一键签到, 只能签到7级以上的贴吧，最多可签50个吧。
+python tieba_autosign.py   # 对常逛的贴吧逐个签到
 ```
 
 
