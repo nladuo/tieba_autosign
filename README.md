@@ -18,7 +18,7 @@ pip install -r requirements.txt
 ``` python
 username = u"你的用户名"
 passwd = "your password"
-exe_path = "/Users/kalen/Programfiles/phantomjs-2.1.1-macosx/bin/phantomjs"
+exe_path = "/usr/local/bin/phantomjs"
 ```
 4、签到
 ``` shell
