@@ -1,7 +1,7 @@
 # tieba_autosign
 百度贴吧自动签到脚本
-## 截图
-![截图](./screenshot.png)
+## 效果
+![效果](./effect.png)
 
 ## 安装
 1、下载源码
@@ -26,4 +26,5 @@ python main.py   # 对常逛的贴吧逐个签到
 ```
 
 ## LICENSE
+ll
 MIT
