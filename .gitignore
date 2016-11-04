@@ -3,3 +3,4 @@ ghostdriver.log
 config.py
 *.pyc
 debug*.png
+vcode.png

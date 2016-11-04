@@ -6,12 +6,13 @@ from selenium import webdriver
 import time
 from bs4 import BeautifulSoup
 from config import *
+import traceback
 
 
 # 判断是否存在验证码
 def have_verifycode(page_source):
     bs_obj = BeautifulSoup(page_source, "html.parser")
-    return bs_obj.find('input', {'id': 'TANGRAM__PSP_6__verifycode'}) != None
+    return not (bs_obj.find('input', {'id': 'TANGRAM__PSP_6__verifycode'}) is None)
 
 
 # 解析贴吧
@@ -27,6 +28,11 @@ def parse_tiebas(page_source):
         })
     return tiebas
 
+
+# 睡眠一会儿
+def sleep_for_a_while():
+    time.sleep(1)
+
 if __name__ == '__main__':
     print("正在模拟登陆百度贴吧....")
     # 模拟登陆
@@ -37,12 +43,12 @@ if __name__ == '__main__':
         # 隐藏跳转app界面
         app_continue_span = driver.find_element_by_id('index-app-continue')
         app_continue_span.click()
-        time.sleep(1)
+        sleep_for_a_while()
 
         # 显示登陆窗口
         login_tag = driver.find_element_by_class_name('j_footer_toast')
         login_tag.click()
-        time.sleep(1)
+        sleep_for_a_while()
 
         # 开始模拟登陆
         username_input = driver.find_element_by_id("TANGRAM__PSP_6__username")
@@ -52,47 +58,54 @@ if __name__ == '__main__':
 
         login_btn = driver.find_element_by_id("TANGRAM__PSP_6__submit")
         login_btn.click()
-        time.sleep(1)
+        sleep_for_a_while()
 
         # 判断验证码
         if have_verifycode(driver.page_source):
-            print('遇到验证码, 自动退出')
-        else:
-            print('登陆成功, 开始签到!')
-            # 开始进行签到
-            driver.get("http://tieba.baidu.com/?page=like")
-            expand_more = driver.find_element_by_xpath("//div[@class='expand-all']/p")
-            expand_more.click()
-            time.sleep(1)
+            driver.get_screenshot_as_file('vcode.png')
+            vcode_input = driver.find_element_by_id("TANGRAM__PSP_6__verifycode")
+            vcode = raw_input("遇到验证码, 请查看vcode.png, 然后填写验证码: ")
+            print('您输入的验证码为:"', vcode, '"')
+            vcode_input.send_keys(vcode)
+            login_btn.click()
+            sleep_for_a_while()
 
-            # 获取常逛的贴吧
-            tiebas = parse_tiebas(driver.page_source)
+        print('登陆成功, 开始签到!')
+        # 开始进行签到
+        driver.get("http://tieba.baidu.com/?page=like")
+        expand_more = driver.find_element_by_xpath("//div[@class='expand-all']/p")
+        expand_more.click()
+        time.sleep(1)
 
-            # 逐个签到
-            for tieba in tiebas:
-                print(u"正在签到-->\"" + tieba['title'] + u"\"吧", end='')
-                driver.get(tieba['href'])
-                bs_obj = BeautifulSoup(driver.page_source, "html.parser")
-                sign_btn_tag = bs_obj.find("a", {'class': 'sign-button'})
-                if sign_btn_tag.text == u"已签到":
-                    print("(已经完成签到,不需要重新签到)")
-                    continue
-                # 点击签到
-                sign_btn = driver.find_element_by_class_name('sign-button')
-                sign_btn.click()
-                time.sleep(1)
+        # 获取常逛的贴吧
+        tiebas = parse_tiebas(driver.page_source)
 
-                # 关闭贴吧客户端窗口
-                close_client_btn = driver.find_element_by_class_name('daoliu_sign_in_prompt_close')
-                close_client_btn.click()
-                time.sleep(1)
-                print("(签到成功)")
+        # 逐个签到
+        for tieba in tiebas:
+            print(u"正在签到-->\"" + tieba['title'] + u"\"吧", end='')
+            driver.get(tieba['href'])
+            bs_obj = BeautifulSoup(driver.page_source, "html.parser")
+            sign_btn_tag = bs_obj.find("a", {'class': 'sign-button'})
+            if sign_btn_tag.text == u"已签到":
+                print("(已经完成签到,不需要重新签到)")
+                continue
+            # 点击签到
+            sign_btn = driver.find_element_by_class_name('sign-button')
+            sign_btn.click()
+            sleep_for_a_while()
 
-            print('全部签到完成!!!')
-        driver.quit()
+            # 关闭贴吧客户端窗口
+            close_client_btn = driver.find_element_by_class_name('daoliu_sign_in_prompt_close')
+            close_client_btn.click()
+            sleep_for_a_while()
+            print("(签到成功)")
+
+        print('全部签到完成!!!')
     except Exception, ex:
-        print(ex)
+        traceback.print_exc()
+    finally:
         print('正在退出')
         driver.quit()
+
 
 
