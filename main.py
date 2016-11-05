@@ -29,7 +29,7 @@ def parse_tiebas(page_source):
     return tiebas
 
 
-# 睡眠一会儿
+# 等待一会儿
 def sleep_for_a_while():
     time.sleep(1)
 
