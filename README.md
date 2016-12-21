@@ -26,5 +26,4 @@ python main.py   # 对常逛的贴吧逐个签到
 ```
 
 ## LICENSE
-ll
 MIT
