@@ -24,7 +24,7 @@ def parse_tiebas(page_source):
         href = a.get("href")
         tiebas.append({
             'title': title,
-            'href': 'http://tieba.baidu.com' + href
+            'href': 'http:' + href
         })
     return tiebas
 
@@ -32,6 +32,12 @@ def parse_tiebas(page_source):
 # 等待一会儿
 def sleep_for_a_while():
     time.sleep(1)
+
+
+# 截图,用于调试
+def take_screenshot(driver, id):
+    driver.get_screenshot_as_file("debug" + id + ".png")
+
 
 if __name__ == '__main__':
     print("正在模拟登陆百度贴吧....")
@@ -75,7 +81,7 @@ if __name__ == '__main__':
         driver.get("http://tieba.baidu.com/?page=like")
         expand_more = driver.find_element_by_xpath("//div[@class='expand-all']/p")
         expand_more.click()
-        time.sleep(1)
+        sleep_for_a_while()
 
         # 获取常逛的贴吧
         tiebas = parse_tiebas(driver.page_source)
