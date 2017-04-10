@@ -4,3 +4,4 @@ config.py
 *.pyc
 debug*.png
 vcode.png
+cookies.pickle
