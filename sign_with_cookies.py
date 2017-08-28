@@ -66,7 +66,7 @@ if __name__ == '__main__':
             print("(签到成功)")
 
         print('全部签到完成!!!')
-    except Exception, ex:
+    except Exception as ex:
         traceback.print_exc()
     finally:
         print('正在退出')
