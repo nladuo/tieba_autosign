@@ -94,6 +94,9 @@ if __name__ == '__main__':
             driver.get(tieba['href'])
             bs_obj = BeautifulSoup(driver.page_source, "html.parser")
             sign_btn_tag = bs_obj.find("a", {'class': 'sign-button'})
+            if sign_btn_tag is None:
+                print("(未找到签到标签)")
+                continue
             if sign_btn_tag.text == u"已签到":
                 print("(已经完成签到,不需要重新签到)")
                 continue
