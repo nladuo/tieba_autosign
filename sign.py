@@ -81,8 +81,10 @@ if __name__ == '__main__':
         print('登陆成功, 开始签到!')
         # 开始进行签到
         driver.get("http://tieba.baidu.com/?page=like")
-        expand_more = driver.find_element_by_xpath("//div[@class='expand-all']/p")
-        expand_more.click()
+        try:
+            expand_more = driver.find_element_by_xpath("//div[@class='expand-all']/p")
+            expand_more.click()
+        except: pass
         sleep_for_a_while()
 
         # 获取常逛的贴吧
