@@ -17,9 +17,11 @@ if __name__ == '__main__':
         driver.get('http://tieba.baidu.com/?page=user')
 
         # 隐藏跳转app界面
-        app_continue_span = driver.find_element_by_id('index-app-continue')
-        app_continue_span.click()
-        sleep_for_a_while()
+        try:
+            app_continue_span = driver.find_element_by_id('index-app-continue')
+            app_continue_span.click()
+            sleep_for_a_while()
+        except: pass
 
         # 显示登陆窗口
         login_tag = driver.find_element_by_class_name('j_footer_toast')

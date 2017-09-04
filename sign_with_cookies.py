@@ -38,9 +38,11 @@ if __name__ == '__main__':
         # 开始进行签到
         print("开始签到")
         driver.get("http://tieba.baidu.com/?page=like")
-        expand_more = driver.find_element_by_xpath("//div[@class='expand-all']/p")
-        expand_more.click()
-        sleep_for_a_while()
+        try:
+            expand_more = driver.find_element_by_xpath("//div[@class='expand-all']/p")
+            expand_more.click()
+            sleep_for_a_while()
+        except: pass
 
         # 获取常逛的贴吧
         tiebas = parse_tiebas(driver.page_source)
@@ -51,6 +53,9 @@ if __name__ == '__main__':
             driver.get(tieba['href'])
             bs_obj = BeautifulSoup(driver.page_source, "html.parser")
             sign_btn_tag = bs_obj.find("a", {'class': 'sign-button'})
+            if sign_btn_tag is None:
+                print("(未找到签到标签)")
+                continue
             if sign_btn_tag.text == u"已签到":
                 print("(已经完成签到,不需要重新签到)")
                 continue
